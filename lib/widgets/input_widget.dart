@@ -111,7 +111,7 @@ class _InputWidgetState extends State<InputWidget>
               ),
               TextField(
                 controller: formatController,
-                maxLines: null,
+                maxLines: 10,
                 minLines: 7,
                 decoration: InputDecoration(
                   fillColor: AppColor.blackBackgroundText,

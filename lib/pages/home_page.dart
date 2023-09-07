@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:save_file_formats/widgets/input_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../animations/type_writer_effect.dart';
 import '../values/app_color.dart';
 import '../animations/draw_clip.dart';
@@ -114,15 +115,48 @@ class _HomePageState extends State<HomePage>
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: InputWidget())),
-              const Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Text(
-                  "Made by NGUYEN LE TRONG NHAN",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Rubik-SemiBold',
-                    color: AppColor.blackBackgroundText,
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        launchUrl(Uri.parse(
+                            'https://www.facebook.com/nguyenletrongnhanofficial'));
+                      },
+                      child: SvgPicture.asset(
+                        "assets/svgs/facebook.svg",
+                        color: AppColor.blackBackground,
+                        height: 25,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        launchUrl(Uri.parse(
+                            'https://github.com/nguyenletrongnhanofficial/save_file_formats'));
+                      },
+                      child: SvgPicture.asset(
+                        "assets/svgs/github.svg",
+                        color: AppColor.blackBackground,
+                        height: 25,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    const Text(
+                      "Made by NGUYEN LE TRONG NHAN",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Rubik-SemiBold',
+                        color: AppColor.blackBackgroundText,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
