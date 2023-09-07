@@ -95,6 +95,7 @@ class _InputWidgetState extends State<InputWidget>
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

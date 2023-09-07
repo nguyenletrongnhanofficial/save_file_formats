@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage>
                 child: ClipPath(
                   clipper: DrawClip(_controller.value),
                   child: Container(
-                    height: size.height * 0.81,
+                    height: size.height * 0.71,
                     decoration: const BoxDecoration(color: AppColor.yellow),
                   ),
                 ),
@@ -61,7 +61,31 @@ class _HomePageState extends State<HomePage>
             );
           },
         ),
+        AnimatedBuilder(
+          animation: _controller,
+          builder: (BuildContext context, Widget? child) {
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipPath(
+                clipper: DrawClip(_controller.value),
+                child: Container(
+                  height: size.height * 0.65,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          Colors.white,
+                          Colors.white,
+                        ]),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
         SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
