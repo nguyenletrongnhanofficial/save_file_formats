@@ -62,12 +62,23 @@ class _InputWidgetState extends State<InputWidget>
 
   void handleDownload() {
     String format = formatController.text.trim();
-    String fileFormat = saveFormat == "Custom" ? customFormat! : saveFormat;
+    if (saveFormat == "svg") {
+      String removedText = format.replaceAll(
+          'font-family="none" font-weight="none" font-size="none" text-anchor="none"',
+          '');
 
-    if (format.isNotEmpty) {
-      saveToFile(format, fileFormat, defaultFileName);
+      if (removedText.isNotEmpty) {
+        saveToFile(removedText, saveFormat, defaultFileName);
+      } else {
+        _showSnackBar('Please Input Code!', Colors.red);
+      }
     } else {
-      _showSnackBar('Please Input Code!', Colors.red);
+      format.isNotEmpty
+          ? saveToFile(
+              format,
+              saveFormat == "Custom" ? customFormat.toString() : saveFormat,
+              defaultFileName)
+          : _showSnackBar('Please Input Code!', Colors.red);
     }
   }
 
