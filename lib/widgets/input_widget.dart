@@ -13,7 +13,7 @@ class _InputWidgetState extends State<InputWidget>
   TextEditingController formatController = TextEditingController();
   String saveFormat = "svg";
   String? customFormat;
-  late String defaultFileName;
+  String defaultFileName = "";
 
   @override
   void initState() {
@@ -23,65 +23,63 @@ class _InputWidgetState extends State<InputWidget>
 
   String _getDefaultFileName() {
     DateTime now = DateTime.now();
-    String fileName =
-        '${now.second}_${now.minute}_${now.hour}_${now.month}_${now.year}';
-    return fileName;
+    return '${now.second}_${now.minute}_${now.hour}_${now.month}_${now.year}';
   }
+
+  InputDecoration buildInputDecoration() {
+    return InputDecoration(
+      fillColor: AppColor.blackBackgroundText,
+      filled: true,
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColor.whiteBorder),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: AppColor.whiteBorder),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    );
+  }
+
+  TextStyle commonTextStyle = const TextStyle(
+    fontSize: 14,
+    fontFamily: 'Rubik-Bold',
+    color: AppColor.whiteText,
+  );
 
   void saveToFile(String text, String format, String fileName) {
     final textBlob = Blob([text]);
     final url = Url.createObjectUrlFromBlob(textBlob);
-    final anchorElement = AnchorElement()
-      ..href = url
+    final anchorElement = AnchorElement(href: url)
       ..download = '$fileName.$format';
 
     anchorElement.click();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Saved file successfully!',
-          style: TextStyle(
-            fontSize: 15,
-            fontFamily: 'Rubik-Bold',
-            color: Colors.green,
-          ),
-        ),
-      ),
+    _showSnackBar(
+      'Saved file successfully!',
+      Colors.green,
     );
   }
 
   void handleDownload() {
     String format = formatController.text.trim();
+    String fileFormat = saveFormat == "Custom" ? customFormat! : saveFormat;
 
-    if (saveFormat == "svg") {
-      String removedText = format.replaceAll(
-          'font-family="none" font-weight="none" font-size="none" text-anchor="none"',
-          '');
-
-      if (removedText.isNotEmpty) {
-        saveToFile(removedText, saveFormat, defaultFileName);
-      } else {
-        _showErrorSnackBar('Please Input Code!');
-      }
+    if (format.isNotEmpty) {
+      saveToFile(format, fileFormat, defaultFileName);
     } else {
-      if (format.isNotEmpty) {
-        saveToFile(format, saveFormat, defaultFileName);
-      } else {
-        _showErrorSnackBar('Please Input Code!');
-      }
+      _showSnackBar('Please Input Code!', Colors.red);
     }
   }
 
-  void _showErrorSnackBar(String message) {
+  void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontFamily: 'Rubik-Bold',
-            color: Colors.red,
+            color: color,
           ),
         ),
       ),
@@ -107,38 +105,19 @@ class _InputWidgetState extends State<InputWidget>
                   color: AppColor.whiteText,
                 ),
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               TextField(
                 controller: formatController,
                 maxLines: 10,
                 minLines: 7,
-                decoration: InputDecoration(
-                  fillColor: AppColor.blackBackgroundText,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.whiteBorder),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.whiteBorder),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
+                decoration: buildInputDecoration(),
               ),
               const SizedBox(height: 16.0),
-              const Text(
+              Text(
                 "Format",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Rubik-Bold',
-                  color: AppColor.whiteText,
-                ),
+                style: commonTextStyle,
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               DropdownButtonFormField(
                 value: saveFormat,
                 onChanged: (String? newValue) {
@@ -156,31 +135,12 @@ class _InputWidgetState extends State<InputWidget>
                     value: value,
                     child: Text(
                       value,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Rubik-Bold',
-                        color: AppColor.whiteText,
-                      ),
+                      style: commonTextStyle,
                     ),
                   );
                 }).toList(),
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Rubik-Bold',
-                  color: AppColor.whiteText,
-                ),
-                decoration: InputDecoration(
-                  fillColor: AppColor.blackBackgroundText,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.whiteBorder),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.whiteBorder),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
+                style: commonTextStyle,
+                decoration: buildInputDecoration(),
                 dropdownColor: AppColor.blackBackgroundText,
               ),
               if (saveFormat == "Custom")
@@ -193,61 +153,23 @@ class _InputWidgetState extends State<InputWidget>
                           customFormat = value;
                         });
                       },
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Rubik-Bold',
-                        color: AppColor.whiteText,
-                      ),
-                      decoration: InputDecoration(
-                        fillColor: AppColor.blackBackgroundText,
-                        filled: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: AppColor.whiteBorder),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: AppColor.whiteBorder),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
+                      style: commonTextStyle,
+                      decoration: buildInputDecoration(),
                     ),
                   ],
                 ),
               const SizedBox(height: 16.0),
-              const Text(
+              Text(
                 "File name",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Rubik-Bold',
-                  color: AppColor.whiteText,
-                ),
+                style: commonTextStyle,
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               TextField(
                 onChanged: (String value) {
                   defaultFileName = value;
                 },
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Rubik-Bold',
-                  color: AppColor.whiteText,
-                ),
-                decoration: InputDecoration(
-                  fillColor: AppColor.blackBackgroundText,
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.whiteBorder),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: AppColor.whiteBorder),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
+                style: commonTextStyle,
+                decoration: buildInputDecoration(),
               ),
               const SizedBox(height: 16.0),
               InkWell(
@@ -265,18 +187,18 @@ class _InputWidgetState extends State<InputWidget>
                         'assets/svgs/download.svg',
                         height: 20,
                       ),
-                      const SizedBox(
-                        width: 5,
+                      const SizedBox(width: 5),
+                      const Text(
+                        'Download',
+                        style: TextStyle(
+                          color: AppColor.whiteText,
+                          fontFamily: 'Rubik-Bold',
+                        ),
                       ),
-                      const Text('Download',
-                          style: TextStyle(
-                            color: AppColor.whiteText,
-                            fontFamily: 'Rubik-Bold',
-                          )),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

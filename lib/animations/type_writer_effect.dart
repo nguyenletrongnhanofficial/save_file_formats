@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import '../values/app_color.dart';
 
 class TypeWriterTextEffect extends StatefulWidget {
